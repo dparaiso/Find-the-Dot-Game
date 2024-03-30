@@ -24,12 +24,12 @@ nested-cross-compile:
 	@# make --directory=logicAnalyzer-Linux
 
 pru-copy:
-	mkdir -p $(HOME)/cmpt433/public/myApps/as4pru/
-	cp -r ./pru $(HOME)/cmpt433/public/myApps/as4pru/
-	@echo "COPY ONLY" > $(HOME)/cmpt433/public/pru/_COPY_ONLY_
+	mkdir -p $(HOME)/cmpt433/public/myApps/pru-as4/
+	cp -r ./pru-as4 $(HOME)/cmpt433/public/myApps/pru-as4/
+	@echo "COPY ONLY" > $(HOME)/cmpt433/public/myApps/pru-as4/_COPY_ONLY_
 	@echo ""
 	@echo "You must build the PRU code on the target, then install it:"
-	@echo "(bbg)$$ cd /mount/remote/myApps/as4pru/<your-folder>/"
+	@echo "(bbg)$$ cd /mount/remote/myApps/pru-as4/<your-folder>/"
 	@echo "(bbg)$$ make"
 	@echo "(bbg)$$ sudo make install_PRU0"
 endif
