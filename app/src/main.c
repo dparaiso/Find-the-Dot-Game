@@ -3,16 +3,10 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include "helper.c"
-
-static void PRU_init() {
-    runCommand("cd ./pru-as4/pru-as4 && make");
-    sleepForMs(1);
-    runCommand("cd ./pru-as4/pru-as4 && sudo make install_PRU0");
-}
+#include "hal/neopixel.h"
 
 int main()
 {
     printf("Hello world!\n");
-    PRU_init();
+    Neopixel_init();
 } 

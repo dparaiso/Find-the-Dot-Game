@@ -1,8 +1,9 @@
 #include <sys/wait.h>
 #include <time.h> 
+#include <stdio.h>
 #include "helper.h"
 
-static void runCommand(char* command){
+void runCommand(char* command){
     //Execute shell command (output into pipe)
     FILE *pipe = popen(command, "r");
 
@@ -24,7 +25,7 @@ static void runCommand(char* command){
     }
 }
 
-static void sleepForMs(long long delayInMs){
+void sleepForMs(long long delayInMs){
     const long long NS_PER_MS = 1000 * 1000; 
     const long long NS_PER_SECOND = 1000000000;
     
