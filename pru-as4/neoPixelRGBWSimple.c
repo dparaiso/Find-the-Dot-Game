@@ -30,8 +30,9 @@
 #include <stdint.h>
 #include <pru_cfg.h>
 #include "resource_table_empty.h"
+#include "include/sharedDataStruct.h"
 
-#define STR_LEN         8       // # LEDs in our string
+#define NUM_OF_LEDS         8       // # LEDs in our string
 #define oneCyclesOn     700/5   // Stay on 700ns
 #define oneCyclesOff    800/5
 #define zeroCyclesOn    350/5
@@ -41,60 +42,87 @@
 // P8_11 for output (on R30), PRU0
 #define DATA_PIN 15       // Bit number to output on
 
+#define THIS_PRU_DRAM 0x00000
+#define OFFSET 0x200
+#define THIS_PRU_DRAM_USABLE (THIS_PRU_DRAM + OFFSET)
+
 volatile register uint32_t __R30;
 volatile register uint32_t __R31;
+
+volatile sharedMemStruct_t *colourStruct = (volatile void *)THIS_PRU_DRAM_USABLE;
 
 void main(void)
 {
     // Clear SYSCFG[STANDBY_INIT] to enable OCP master port
     CT_CFG.SYSCFG_bit.STANDBY_INIT = 0;
+    
+    colourStruct->led0Colour = 0;
+    colourStruct->led1Colour = 0;
+    colourStruct->led2Colour = 0;
+    colourStruct->led3Colour = 0;
+    colourStruct->led4Colour = 0;
+    colourStruct->led5Colour = 0;
+    colourStruct->led6Colour = 0;
+    colourStruct->led7Colour = 0;
 
+    uint32_t colour[NUM_OF_LEDS];
     // COLOURS
     // - 1st element in array is 1st (bottom) on LED strip; last element is last on strip (top)
     // - Bits: {Green/8 bits} {Red/8 bits} {Blue/8 bits} {White/8 bits}
-    uint32_t color[STR_LEN] = {
-        0x0f000000, // Green
-        0x000f0000, // Red
-        0x00000f00, // Blue
-        0x0000000f, // White
-        0x0f0f0f00, // White (via RGB)
-        0x0f0f0000, // Yellow
-        0x000f0f00, // Purple
-        0x0f000f00, // Teal
+    // uint32_t color[STR_LEN] = {
+    //     0x0f000000, // Green
+    //     0x000f0000, // Red
+    //     0x00000f00, // Blue
+    //     0x0000000f, // White
+    //     0x0f0f0f00, // White (via RGB)
+    //     0x0f0f0000, // Yellow
+    //     0x000f0f00, // Purple
+    //     0x0f000f00, // Teal
 
-        // Try these; they are birght! 
-        // (You'll need to comment out some of the above)
-        // 0xff000000, // Green Bright
-        // 0x00ff0000, // Red Bright
-        // 0x0000ff00, // Blue Bright
-        // 0xffffff00, // White
-        // 0xff0000ff, // Green Bright w/ Bright White
-        // 0x00ff00ff, // Red Bright w/ Bright White
-        // 0x0000ffff, // Blue Bright w/ Bright White
-        // 0xffffffff, // White w/ Bright White
-    };    
+    //     // Try these; they are birght! 
+    //     // (You'll need to comment out some of the above)
+    //     // 0xff000000, // Green Bright
+    //     // 0x00ff0000, // Red Bright
+    //     // 0x0000ff00, // Blue Bright
+    //     // 0xffffff00, // White
+    //     // 0xff0000ff, // Green Bright w/ Bright White
+    //     // 0x00ff00ff, // Red Bright w/ Bright White
+    //     // 0x0000ffff, // Blue Bright w/ Bright White
+    //     // 0xffffffff, // White w/ Bright White
+    // };    
 
-    __delay_cycles(resetCycles);
+    while(1) {
+        __delay_cycles(resetCycles);
+        
+        colour[0] = colourStruct->led0Colour;
+        colour[1] = colourStruct->led1Colour;
+        colour[2] = colourStruct->led2Colour;
+        colour[3] = colourStruct->led3Colour;
+        colour[4] = colourStruct->led4Colour;
+        colour[5] = colourStruct->led5Colour;
+        colour[6] = colourStruct->led6Colour;
+        colour[7] = colourStruct->led7Colour;
 
-    for(int j = 0; j < STR_LEN; j++) {
-        for(int i = 31; i >= 0; i--) {
-            if(color[j] & ((uint32_t)0x1 << i)) {
-                __R30 |= 0x1<<DATA_PIN;      // Set the GPIO pin to 1
-                __delay_cycles(oneCyclesOn-1);
-                __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
-                __delay_cycles(oneCyclesOff-2);
-            } else {
-                __R30 |= 0x1<<DATA_PIN;      // Set the GPIO pin to 1
-                __delay_cycles(zeroCyclesOn-1);
-                __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
-                __delay_cycles(zeroCyclesOff-2);
+        for(int j = 0; j < NUM_OF_LEDS; j++) {
+            for(int i = 31; i >= 0; i--) {
+                if(colour[j] & ((uint32_t)0x1 << i)) {
+                    __R30 |= 0x1<<DATA_PIN;      // Set the GPIO pin to 1
+                    __delay_cycles(oneCyclesOn-1);
+                    __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
+                    __delay_cycles(oneCyclesOff-2);
+                } else {
+                    __R30 |= 0x1<<DATA_PIN;      // Set the GPIO pin to 1
+                    __delay_cycles(zeroCyclesOn-1);
+                    __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
+                    __delay_cycles(zeroCyclesOff-2);
+                }
             }
         }
-    }
 
-    // Send Reset
-    __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
-    __delay_cycles(resetCycles);
+        // Send Reset
+        __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
+        __delay_cycles(resetCycles);
+    }
 
     __halt();
 }
