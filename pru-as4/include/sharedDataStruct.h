@@ -13,6 +13,7 @@ typedef struct {
     uint32_t led5Colour;
     uint32_t led6Colour;
     uint32_t led7Colour;
+    bool isRunning;
 } sharedMemStruct_t;
 
 #endif

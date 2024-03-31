@@ -24,7 +24,7 @@
 #define PRUSHARED_MEM_FROM_BASE(base) ( (base) + PRU_SHAREDMEM)
 
 volatile void* pPruBase;
-volatile sharedMemStruct_t *colourStruct;
+volatile sharedMemStruct_t *sharedStruct;
 
 volatile void* getPruMmapAddr(void) {
     int fd = open("/dev/mem", O_RDWR | O_SYNC);
@@ -53,8 +53,8 @@ void freePruMmapAddr(volatile void* pPruBase) {
 
 void Neopixel_init() {
     pPruBase = getPruMmapAddr();
-    colourStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);
-   
+    sharedStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);
+    sharedStruct->isRunning = true;
     for(int i = 0; i < NUM_OF_LEDS; i++)  {
         Neopixel_setColour(i, LED_OFF);
     }
@@ -69,34 +69,36 @@ void Neopixel_cleanup() {
     for(int i = 0; i < NUM_OF_LEDS; i++)  {
         Neopixel_setColour(i, LED_OFF);
     }
+    sleepForMs(200);
+    sharedStruct->isRunning = false;
     freePruMmapAddr(pPruBase);
 }
 
 void Neopixel_setColour(int index, Colours col) {
     switch(index) {
         case 0:
-            colourStruct->led0Colour = col << 8;
+            sharedStruct->led0Colour = col << 8;
             break;
         case 1:
-            colourStruct->led1Colour = col << 8;
+            sharedStruct->led1Colour = col << 8;
             break;
         case 2:
-            colourStruct->led2Colour = col << 8;
+            sharedStruct->led2Colour = col << 8;
             break;
         case 3:
-            colourStruct->led3Colour = col << 8;
+            sharedStruct->led3Colour = col << 8;
             break;
         case 4:
-            colourStruct->led4Colour = col << 8;
+            sharedStruct->led4Colour = col << 8;
             break;
         case 5:
-            colourStruct->led5Colour = col << 8;
+            sharedStruct->led5Colour = col << 8;
             break;
         case 6:
-            colourStruct->led6Colour = col << 8;
+            sharedStruct->led6Colour = col << 8;
             break;
         case 7:
-            colourStruct->led7Colour = col << 8;
+            sharedStruct->led7Colour = col << 8;
             break;
         default:
             perror("Error: LED index out of bounds");

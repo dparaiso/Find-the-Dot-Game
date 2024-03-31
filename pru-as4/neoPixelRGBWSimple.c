@@ -28,6 +28,7 @@
 */
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <pru_cfg.h>
 #include "resource_table_empty.h"
 #include "include/sharedDataStruct.h"
@@ -49,22 +50,22 @@
 volatile register uint32_t __R30;
 volatile register uint32_t __R31;
 
-volatile sharedMemStruct_t *colourStruct = (volatile void *)THIS_PRU_DRAM_USABLE;
+volatile sharedMemStruct_t *sharedStruct = (volatile void *)THIS_PRU_DRAM_USABLE;
 
 void main(void)
 {
     // Clear SYSCFG[STANDBY_INIT] to enable OCP master port
     CT_CFG.SYSCFG_bit.STANDBY_INIT = 0;
     
-    colourStruct->led0Colour = 0;
-    colourStruct->led1Colour = 0;
-    colourStruct->led2Colour = 0;
-    colourStruct->led3Colour = 0;
-    colourStruct->led4Colour = 0;
-    colourStruct->led5Colour = 0;
-    colourStruct->led6Colour = 0;
-    colourStruct->led7Colour = 0;
-
+    sharedStruct->led0Colour = 0;
+    sharedStruct->led1Colour = 0;
+    sharedStruct->led2Colour = 0;
+    sharedStruct->led3Colour = 0;
+    sharedStruct->led4Colour = 0;
+    sharedStruct->led5Colour = 0;
+    sharedStruct->led6Colour = 0;
+    sharedStruct->led7Colour = 0;
+    sharedStruct->isRunning = true;
     uint32_t colour[NUM_OF_LEDS];
     // COLOURS
     // - 1st element in array is 1st (bottom) on LED strip; last element is last on strip (top)
@@ -91,17 +92,17 @@ void main(void)
     //     // 0xffffffff, // White w/ Bright White
     // };    
 
-    while(1) {
+    while(sharedStruct->isRunning) {
         __delay_cycles(resetCycles);
         
-        colour[0] = colourStruct->led0Colour;
-        colour[1] = colourStruct->led1Colour;
-        colour[2] = colourStruct->led2Colour;
-        colour[3] = colourStruct->led3Colour;
-        colour[4] = colourStruct->led4Colour;
-        colour[5] = colourStruct->led5Colour;
-        colour[6] = colourStruct->led6Colour;
-        colour[7] = colourStruct->led7Colour;
+        colour[0] = sharedStruct->led0Colour;
+        colour[1] = sharedStruct->led1Colour;
+        colour[2] = sharedStruct->led2Colour;
+        colour[3] = sharedStruct->led3Colour;
+        colour[4] = sharedStruct->led4Colour;
+        colour[5] = sharedStruct->led5Colour;
+        colour[6] = sharedStruct->led6Colour;
+        colour[7] = sharedStruct->led7Colour;
 
         for(int j = 0; j < NUM_OF_LEDS; j++) {
             for(int i = 31; i >= 0; i--) {

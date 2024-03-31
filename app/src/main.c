@@ -8,6 +8,7 @@
 
 int main()
 {
+    printf("Hello world!\n");
     Neopixel_init();
     
     sleepForMs(1000);
