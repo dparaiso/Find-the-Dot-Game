@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <time.h> 
 
 
 #define i2c_config1 "config-pin P9_18 i2c"
@@ -32,6 +33,11 @@
 
 #define CTRL_REG1 0x20
 
+typedef struct{
+    double x; 
+    double y; 
+} Point;
+
 void Accelerometer_init(); 
 void Accelerometer_cleanup();
 void initI2cBus();
@@ -41,4 +47,5 @@ void* playAccelX();
 void* playAccelY(); 
 float readX();
 float readY();
+Point getRandomPoint(); 
 #endif

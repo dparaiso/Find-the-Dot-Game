@@ -2,8 +2,13 @@
 #include "../../app/include/helper.h"
 static pthread_t xtid, ytid;
 static int i2cFileDesc; 
+Point point; 
 
 void Accelerometer_init(){
+    // initialize seed for random points
+    srand(time(NULL)); 
+    point = getRandomPoint(); 
+
     // configure pins
 	runCommand(i2c_config1);
     runCommand(i2c_config2); 
@@ -80,25 +85,34 @@ unsigned char readI2cReg(unsigned char regAddr)
 }
 
 void* playAccelX(){
+    // printf("point: %d\n", (int)point.x); 
     while(1){
-
+        sleepForMs(500); 
+        // printf("x: %d\n", (int)readX()); 
+        // match first int 
+        if((int)readX() == (int)point.x){
+            printf("hit\n"); 
+        }
     }
 }
 
 void* playAccelY(){
+    // printf("point: %d\n", (int)point.y); 
     while(1){
-        
+        sleepForMs(500); 
+        // printf("y: %d\n", (int)readY()); 
+        // match first int 
+        if((int)readY() == (int)point.y){
+            printf("hit\n"); 
+        }
     }
 }
 
 float readX(){
-    uint8_t buff[2]; 
-    int REG_XMSB = 0; 
-    int REG_XLSB = 1;
-    buff[REG_XMSB] = (unsigned int)readI2cReg(OUT_X_H);
-    buff[REG_XLSB] = (unsigned int)readI2cReg(OUT_X_L);
-    int16_t floatx = ((buff[REG_XMSB] << 8) | buff[REG_XLSB]);
-    return (float)floatx/100;
+    uint8_t msb = (unsigned int)readI2cReg(OUT_X_H);
+    uint8_t lsb = (unsigned int)readI2cReg(OUT_X_L);
+    int16_t floatx = ((msb << 8) | lsb);
+    return (float)floatx/1000;
 
 }
 
@@ -107,5 +121,17 @@ float readY(){
     uint8_t lsb = (unsigned int)readI2cReg(OUT_Y_L);
     uint8_t msb = (unsigned int)readI2cReg(OUT_Y_H);
     int16_t floatx = (msb << 8) | lsb; 
-    return (float)floatx/100;
+    return (float)floatx/1000;
+}
+
+Point getRandomPoint(){
+    Point temp; 
+    // generate number from -0.5 to 0.5
+    // temp.x = -0.5 + ((double)rand()/ RAND_MAX);
+    // temp.y = -0.5 + ((double)rand()/ RAND_MAX);
+    
+    // generate number from -5 to 5
+    temp.x =  -5 + ((double)rand()/ (RAND_MAX/10)); 
+    temp.y = -5 + ((double)rand()/ (RAND_MAX/10)); 
+    return temp; 
 }
