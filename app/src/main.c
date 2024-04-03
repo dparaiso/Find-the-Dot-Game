@@ -5,11 +5,13 @@
 #include <stdbool.h>
 #include "helper.h"
 #include "hal/neopixel.h"
+#include "hal/accelerometer.h"
 
 int main()
 {
     printf("Hello world!\n");
     Neopixel_init();
+    Accelerometer_init(); 
     
     sleepForMs(1000);
     Neopixel_setColour(0, LED_BRIGHT_GREEN);
@@ -23,4 +25,5 @@ int main()
     Neopixel_setColour(6, LED_OFF);
 
     Neopixel_cleanup();
+    Accelerometer_cleanup(); 
 } 

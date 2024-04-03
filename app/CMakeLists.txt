@@ -7,6 +7,10 @@ add_executable(as4 ${MY_SOURCES})
 # Make use of the HAL library
 target_link_libraries(as4 LINK_PRIVATE hal)
 
+# Pthread support 
+find_package(Threads REQUIRED)
+target_link_libraries(as4 LINK_PRIVATE Threads::Threads)
+
 # Copy executable to final location (change `as4` to project name as needed)
 add_custom_command(TARGET as4 POST_BUILD 
   COMMAND "${CMAKE_COMMAND}" -E copy 
