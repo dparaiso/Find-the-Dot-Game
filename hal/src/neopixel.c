@@ -128,24 +128,60 @@ void Neopixel_setColour(int index, Colours col) {
 void* lightController(){
     while(1){
         enum Colours col = LED_OFF; 
+        enum Colours dimCol = LED_OFF; 
         pthread_mutex_lock(xLock); 
         enum xDirections xCopy = *xState; 
         pthread_mutex_unlock(xLock); 
         switch(xCopy){
             case LEFT: 
                 col = LED_BRIGHT_RED; 
+                dimCol = LED_DIM_RED; 
             break; 
             case RIGHT: 
                 col = LED_BRIGHT_GREEN; 
+                dimCol = LED_DIM_GREEN; 
             break; 
             case HITX:
                 col = LED_BRIGHT_BLUE; 
+                dimCol = LED_DIM_BLUE; 
             break; 
             default: 
                 col = LED_OFF; 
+                dimCol = LED_OFF;
             break;  
         }
-        Neopixel_setColour(6, col);
-        sleepForMs(150); 
+
+        pthread_mutex_lock(yLock); 
+        enum yDirections yCopy = *yState; 
+        pthread_mutex_unlock(yLock); 
+        if(yCopy != HITY){
+            setLedHint(yCopy, col, dimCol); 
+        }else{
+            setAllLeds(col); 
+        }
+        sleepForMs(100); 
     }
+}
+
+void setLedHint(enum yDirections ledPos, Colours col, Colours dimCol){
+    for(int i = 0; i < 8; i++){
+        if((int)ledPos == i-1 || (int)ledPos == i+1){
+            Neopixel_setColour(i, dimCol); 
+        }else if((int)ledPos == i){
+            Neopixel_setColour(i, col); 
+        }else{
+            Neopixel_setColour(i, LED_OFF); 
+        }
+    }
+}
+
+void setAllLeds(Colours col){
+    Neopixel_setColour(0, col);
+    Neopixel_setColour(1, col);
+    Neopixel_setColour(2, col);
+    Neopixel_setColour(3, col);
+    Neopixel_setColour(4, col);
+    Neopixel_setColour(5, col);
+    Neopixel_setColour(6, col);
+    Neopixel_setColour(7, col);
 }

@@ -22,7 +22,7 @@ int main()
     Accelerometer_init(&locks); 
     Neopixel_init(&locks);
     
-    sleepForMs(10000);
+    sleepForMs(20000);
     // Neopixel_setColour(0, LED_BRIGHT_GREEN);
     // Neopixel_setColour(1, LED_BRIGHT_GREEN);
     // Neopixel_setColour(2, LED_BRIGHT_GREEN);

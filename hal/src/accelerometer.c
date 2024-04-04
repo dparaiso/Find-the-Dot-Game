@@ -97,10 +97,10 @@ unsigned char readI2cReg(unsigned char regAddr)
 }
 
 void* playAccelX(){
-    printf("point: %d\n", (int)point.x); 
+    // printf("point: %d\n", (int)point.x); 
     while(1){
         sleepForMs(500); 
-        printf("x: %d\n", (int)readX()); 
+        // printf("x: %d\n", (int)readX()); 
         // match first int 
         if((int)readX() == (int)point.x){
             pthread_mutex_lock(xLock); 
@@ -124,9 +124,51 @@ void* playAccelY(){
         sleepForMs(500); 
         // printf("y: %d\n", (int)readY()); 
         // match first int 
-        if((int)readY() == (int)point.y){
-            printf("hit\n"); 
-        }
+        int ydiff = (int)readY() - (int)point.y;
+        enum yDirections yCopy = UP5; 
+        switch(ydiff){
+            case 0: 
+                yCopy = HITY; 
+            break; 
+            case 1: //Down 1
+                yCopy = DOWN1; 
+            break;  
+            case 2: //Down 2
+                yCopy = DOWN2; 
+            break; 
+            case 3: //Down 3
+                yCopy = DOWN3; 
+            break; 
+            case 4: //Down 4
+                yCopy = DOWN4; 
+            break; 
+            case -1: //Up 1
+                yCopy = UP1; 
+            break; 
+            case -2: //Up 2
+                yCopy = UP2; 
+            break; 
+            case -3: //Up 3
+                yCopy = UP3; 
+            break; 
+            case -4: //Up 4
+                yCopy = UP4; 
+            break; 
+            default: 
+                if(ydiff > 4){ // Down 5
+                    yCopy = DOWN5; 
+
+                }else{ // UP5
+                    yCopy = UP5; 
+                }
+            break; 
+
+        } 
+
+        pthread_mutex_lock(yLock); 
+        *yState = yCopy; 
+        pthread_mutex_unlock(yLock); 
+
     }
 }
 
