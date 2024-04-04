@@ -26,6 +26,13 @@
 volatile void* pPruBase;
 volatile sharedMemStruct_t *sharedStruct;
 
+static pthread_t tid; 
+static pthread_mutex_t* lightLock;
+static pthread_mutex_t* xLock;
+static pthread_mutex_t* yLock; 
+static enum xDirections* xState; 
+static enum yDirections* yState;
+
 volatile void* getPruMmapAddr(void) {
     int fd = open("/dev/mem", O_RDWR | O_SYNC);
     if (fd == -1) {
@@ -51,7 +58,7 @@ void freePruMmapAddr(volatile void* pPruBase) {
     }
 }
 
-void Neopixel_init() {
+void Neopixel_init(void* args) {
     pPruBase = getPruMmapAddr();
     sharedStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);
     sharedStruct->isRunning = true;
@@ -63,6 +70,16 @@ void Neopixel_init() {
     // runCommand("make -C ./pru-as4");
     // sleepForMs(1);
     // runCommand("sudo make install_PRU0 -C ./pru-as4");
+
+    // initialize shared things
+    Locks* locks = (Locks*)args; 
+    lightLock = locks->lightLock; 
+    xLock = locks->xLock; 
+    yLock = locks->yLock; 
+    xState = locks->xState; 
+    yState = locks->yState; 
+
+    pthread_create(&tid, NULL, &lightController, NULL); 
 }
 
 void Neopixel_cleanup() {
@@ -72,6 +89,9 @@ void Neopixel_cleanup() {
     sleepForMs(200);
     sharedStruct->isRunning = false;
     freePruMmapAddr(pPruBase);
+
+    pthread_cancel(tid); 
+    pthread_join(tid); 
 }
 
 void Neopixel_setColour(int index, Colours col) {
@@ -102,5 +122,30 @@ void Neopixel_setColour(int index, Colours col) {
             break;
         default:
             perror("Error: LED index out of bounds");
+    }
+}
+
+void* lightController(){
+    while(1){
+        enum Colours col = LED_OFF; 
+        pthread_mutex_lock(xLock); 
+        enum xDirections xCopy = *xState; 
+        pthread_mutex_unlock(xLock); 
+        switch(xCopy){
+            case LEFT: 
+                col = LED_BRIGHT_RED; 
+            break; 
+            case RIGHT: 
+                col = LED_BRIGHT_GREEN; 
+            break; 
+            case HITX:
+                col = LED_BRIGHT_BLUE; 
+            break; 
+            default: 
+                col = LED_OFF; 
+            break;  
+        }
+        Neopixel_setColour(6, col);
+        sleepForMs(150); 
     }
 }

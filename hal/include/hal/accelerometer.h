@@ -38,7 +38,8 @@ typedef struct{
     double y; 
 } Point;
 
-void Accelerometer_init(); 
+
+void Accelerometer_init(void* args); 
 void Accelerometer_cleanup();
 void initI2cBus();
 void writeI2cReg(unsigned char regAddr, unsigned char value);

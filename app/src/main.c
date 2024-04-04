@@ -3,15 +3,24 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <pthread.h> 
 #include "helper.h"
 #include "hal/neopixel.h"
 #include "hal/accelerometer.h"
 
+static pthread_mutex_t lightLock = PTHREAD_MUTEX_INITIALIZER; 
+static pthread_mutex_t xLock = PTHREAD_MUTEX_INITIALIZER; 
+static pthread_mutex_t yLock = PTHREAD_MUTEX_INITIALIZER; 
+static enum xDirections xState; 
+static enum yDirections yState; 
+
 int main()
 {
     printf("Hello world!\n");
-    Accelerometer_init(); 
-    Neopixel_init();
+
+    Locks locks = {&lightLock, &xLock, &yLock, &xState, &yState}; 
+    Accelerometer_init(&locks); 
+    Neopixel_init(&locks);
     
     sleepForMs(10000);
     // Neopixel_setColour(0, LED_BRIGHT_GREEN);

@@ -3,8 +3,20 @@
 static pthread_t xtid, ytid;
 static int i2cFileDesc; 
 Point point; 
+static pthread_mutex_t* lightLock;
+static pthread_mutex_t* xLock;
+static pthread_mutex_t* yLock;
+static enum xDirections* xState; 
+static enum yDirections* yState; 
 
-void Accelerometer_init(){
+
+void Accelerometer_init(void* args){
+    Locks* locks = (Locks*)args; 
+    lightLock = locks->lightLock; 
+    xLock = locks->xLock; 
+    yLock = locks->yLock; 
+    xState = locks->xState; 
+    yState = locks->yState; 
     // initialize seed for random points
     srand(time(NULL)); 
     point = getRandomPoint(); 
@@ -85,13 +97,23 @@ unsigned char readI2cReg(unsigned char regAddr)
 }
 
 void* playAccelX(){
-    // printf("point: %d\n", (int)point.x); 
+    printf("point: %d\n", (int)point.x); 
     while(1){
         sleepForMs(500); 
-        // printf("x: %d\n", (int)readX()); 
+        printf("x: %d\n", (int)readX()); 
         // match first int 
         if((int)readX() == (int)point.x){
-            printf("hit\n"); 
+            pthread_mutex_lock(xLock); 
+            *xState = HITX; 
+            pthread_mutex_unlock(xLock); 
+        }else if((int)readX() > (int)point.x){
+            pthread_mutex_lock(xLock); 
+            *xState = LEFT; 
+            pthread_mutex_unlock(xLock); 
+        }else{
+            pthread_mutex_lock(xLock); 
+            *xState = RIGHT; 
+            pthread_mutex_unlock(xLock); 
         }
     }
 }
@@ -117,7 +139,6 @@ float readX(){
 }
 
 float readY(){
-    int REG_YLSB = 1;
     uint8_t lsb = (unsigned int)readI2cReg(OUT_Y_L);
     uint8_t msb = (unsigned int)readI2cReg(OUT_Y_H);
     int16_t floatx = (msb << 8) | lsb; 
@@ -129,7 +150,7 @@ Point getRandomPoint(){
     // generate number from -0.5 to 0.5
     // temp.x = -0.5 + ((double)rand()/ RAND_MAX);
     // temp.y = -0.5 + ((double)rand()/ RAND_MAX);
-    
+
     // generate number from -5 to 5
     temp.x =  -5 + ((double)rand()/ (RAND_MAX/10)); 
     temp.y = -5 + ((double)rand()/ (RAND_MAX/10)); 
