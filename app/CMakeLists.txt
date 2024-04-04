@@ -1,6 +1,7 @@
 # Build the app, using the HAL
 
 include_directories(include)
+include_directories(../pru-as4/include)
 file(GLOB MY_SOURCES "src/*.c")
 add_executable(as4 ${MY_SOURCES})
 

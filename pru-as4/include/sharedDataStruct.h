@@ -18,11 +18,4 @@ typedef struct {
     bool isRunning;
 } sharedMemStruct_t;
 
-volatile void* pPruBase;
-volatile sharedMemStruct_t* sharedStruct;
-
-volatile void* getPruMmapAddr(void);
-void freePruMmapAddr(volatile void* pPruBase);
-void initSharedStruct();
-
 #endif
