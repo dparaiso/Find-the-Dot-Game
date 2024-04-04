@@ -3,8 +3,6 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
-
-
 #include "../../app/include/helper.h"
 #include "hal/neopixel.h"
 #include "sharedDataStruct.h"
@@ -23,43 +21,15 @@
 #define PRU1_MEM_FROM_BASE(base) ( (base) + PRU1_DRAM + PRU_MEM_RESERVED)
 #define PRUSHARED_MEM_FROM_BASE(base) ( (base) + PRU_SHAREDMEM)
 
-volatile void* pPruBase;
-volatile sharedMemStruct_t *sharedStruct;
-
-volatile void* getPruMmapAddr(void) {
-    int fd = open("/dev/mem", O_RDWR | O_SYNC);
-    if (fd == -1) {
-        perror("ERROR: could not open /dev/mem");
-        exit(EXIT_FAILURE);
-    }
- 
-    // Points to start of PRU memory.
-    volatile void* pPruBase = mmap(0, PRU_LEN, PROT_READ | PROT_WRITE, MAP_SHARED, fd, PRU_ADDR);
-    if (pPruBase == MAP_FAILED) {
-        perror("ERROR: could not map memory");
-        exit(EXIT_FAILURE);
-    }
-    close(fd);
-
-    return pPruBase;
-}
-
-void freePruMmapAddr(volatile void* pPruBase) {
-    if (munmap((void*) pPruBase, PRU_LEN)) {
-        perror("PRU munmap failed");
-        exit(EXIT_FAILURE);
-    }
-}
-
 void Neopixel_init() {
-    pPruBase = getPruMmapAddr();
-    sharedStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);
+    // pPruBase = getPruMmapAddr();
+    // sharedStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);
     sharedStruct->isRunning = true;
     for(int i = 0; i < NUM_OF_LEDS; i++)  {
-        Neopixel_setColour(i, LED_OFF);
+        Neopixel_setColour(i, LED_OFF); 
     }
-
-    // runCommand("config-pin P8.11 pruout");
+    configPin(8, 11, "pruout");
+    
     // runCommand("make -C ./pru-as4");
     // sleepForMs(1);
     // runCommand("sudo make install_PRU0 -C ./pru-as4");

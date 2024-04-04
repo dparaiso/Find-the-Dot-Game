@@ -41,7 +41,9 @@
 #define resetCycles     60000/5 // Must be at least 50u, use 60u
 
 // P8_11 for output (on R30), PRU0
-#define DATA_PIN 15       // Bit number to output on
+#define NEOPIXEL_DATA_PIN 15       // Bit number to output on
+#define JOYSTICK_RIGHT_MASK (1 << 15)
+#define JOYSTICK_DOWN_MASK (1 << 14)
 
 #define THIS_PRU_DRAM 0x00000
 #define OFFSET 0x200
@@ -107,22 +109,28 @@ void main(void)
         for(int j = 0; j < NUM_OF_LEDS; j++) {
             for(int i = 31; i >= 0; i--) {
                 if(colour[j] & ((uint32_t)0x1 << i)) {
-                    __R30 |= 0x1<<DATA_PIN;      // Set the GPIO pin to 1
+                    __R30 |= 0x1<<NEOPIXEL_DATA_PIN;      // Set the GPIO pin to 1
                     __delay_cycles(oneCyclesOn-1);
-                    __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
+                    __R30 &= ~(0x1<<NEOPIXEL_DATA_PIN);   // Clear the GPIO pin
                     __delay_cycles(oneCyclesOff-2);
                 } else {
-                    __R30 |= 0x1<<DATA_PIN;      // Set the GPIO pin to 1
+                    __R30 |= 0x1<<NEOPIXEL_DATA_PIN;      // Set the GPIO pin to 1
                     __delay_cycles(zeroCyclesOn-1);
-                    __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
+                    __R30 &= ~(0x1<<NEOPIXEL_DATA_PIN);   // Clear the GPIO pin
                     __delay_cycles(zeroCyclesOff-2);
                 }
             }
         }
-
         // Send Reset
-        __R30 &= ~(0x1<<DATA_PIN);   // Clear the GPIO pin
+        __R30 &= ~(0x1<<NEOPIXEL_DATA_PIN);   // Clear the GPIO pin
         __delay_cycles(resetCycles);
+
+        if (!(__R31 & JOYSTICK_DOWN_MASK)) {
+            sharedStruct->joystickDown = true;
+        }
+        if (!(__R31 & JOYSTICK_RIGHT_MASK)) {
+            sharedStruct->joystickRight = true;
+        }
     }
 
     __halt();

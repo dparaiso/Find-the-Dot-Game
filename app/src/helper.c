@@ -36,3 +36,12 @@ void sleepForMs(long long delayInMs){
     struct timespec reqDelay = {seconds, nanoseconds}; 
     nanosleep(&reqDelay, (struct timespec *) NULL);
 }
+
+void configPin(int header, int pin, char* setting) {
+    char command[1024];
+    char pinStr[3];
+    snprintf(pinStr, 3, "%02d", pin);
+    snprintf(command, 1024, "config-pin p%d.%s %s", header, pinStr, setting);
+    
+    runCommand(command);
+}

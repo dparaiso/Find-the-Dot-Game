@@ -5,11 +5,13 @@
 #include <stdbool.h>
 #include "helper.h"
 #include "hal/neopixel.h"
+#include "hal/joystick.h"
 
 int main()
 {
     printf("Hello world!\n");
     Neopixel_init();
+    // Joystick_init(); //JOYSTICK SHOULD BE LAST THING TO INIT. I do a pthread_join() in Joystick_init()
     
     sleepForMs(1000);
     Neopixel_setColour(0, LED_BRIGHT_GREEN);

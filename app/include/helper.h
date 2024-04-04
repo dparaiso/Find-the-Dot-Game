@@ -3,4 +3,5 @@
 
 void runCommand(char* command);
 void sleepForMs(long long delayInMs);
+void configPin(int header, int pin, char* setting);
 #endif

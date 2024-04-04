@@ -2,7 +2,7 @@
 #define _NEOPIXEL_H_
 
 #define NUM_OF_LEDS 8
-// colours are RGB (not RGBW)
+// colours are RGB (They get turned to RGBW in Neopixel_setColour())
 typedef enum Colours{
     LED_DIM_GREEN    = 0x0f0000,
     LED_BRIGHT_GREEN = 0xff0000,
