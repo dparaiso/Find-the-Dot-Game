@@ -91,7 +91,7 @@ void Neopixel_cleanup() {
     freePruMmapAddr(pPruBase);
 
     pthread_cancel(tid); 
-    pthread_join(tid); 
+    pthread_join(tid, NULL); 
 }
 
 void Neopixel_setColour(int index, Colours col) {
