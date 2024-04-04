@@ -198,3 +198,7 @@ Point getRandomPoint(){
     temp.y = -5 + ((double)rand()/ (RAND_MAX/10)); 
     return temp; 
 }
+
+bool isHit(){
+    return (*xState == HITX && *yState == HITY);
+}

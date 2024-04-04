@@ -49,4 +49,5 @@ void* playAccelY();
 float readX();
 float readY();
 Point getRandomPoint(); 
+bool isHit();
 #endif
