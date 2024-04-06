@@ -7,6 +7,7 @@
 #include "helper.h"
 #include "hal/neopixel.h"
 #include "hal/accelerometer.h"
+#include "hal/joystick.h"
 
 static pthread_mutex_t lightLock = PTHREAD_MUTEX_INITIALIZER; 
 static pthread_mutex_t xLock = PTHREAD_MUTEX_INITIALIZER; 
@@ -21,6 +22,7 @@ int main()
     Locks locks = {&lightLock, &xLock, &yLock, &xState, &yState}; 
     Accelerometer_init(&locks); 
     Neopixel_init(&locks);
+    Joystick_init(); //JOYSTICK SHOULD BE LAST THING TO INIT. I do a pthread_join() in Joystick_init()
     
     sleepForMs(20000);
     // Neopixel_setColour(0, LED_BRIGHT_GREEN);
@@ -35,4 +37,5 @@ int main()
 
     Neopixel_cleanup();
     Accelerometer_cleanup(); 
+    //don't call Joystick_cleanup()
 } 
