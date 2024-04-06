@@ -215,8 +215,7 @@ bool isHit(){
     if(*xState == HITX && *yState == HITY) {
         timesHit++;
         printf("timesHit: %d\n", timesHit);
-        //TODO: Generate new point
-        
+        point = getRandomPoint(); 
         return true;
     }
     return false;

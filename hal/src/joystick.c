@@ -53,6 +53,7 @@ void* joystickController() {
         if(sharedStruct->joystickRight) {
             sharedStruct->isRunning = false;
         }
+        sleepForMs(100); 
     }
     Joystick_cleanup();
     return NULL;
