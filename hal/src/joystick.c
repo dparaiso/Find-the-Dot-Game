@@ -51,6 +51,6 @@ void* joystickController() {
 void Joystick_cleanup() {
     freePruMmapAddr(pPruBase);
 
-    pthread_cancel(tid); 
-    pthread_join(tid, NULL); 
+    // pthread_cancel(tid); 
+    // pthread_join(tid, NULL); 
 }

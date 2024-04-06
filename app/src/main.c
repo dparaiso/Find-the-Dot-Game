@@ -25,4 +25,5 @@ int main()
     Neopixel_setColour(6, LED_OFF);
 
     Neopixel_cleanup();
+    //don't call Joystick_cleanup()
 } 
