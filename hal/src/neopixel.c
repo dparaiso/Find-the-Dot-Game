@@ -49,6 +49,7 @@ void Neopixel_cleanup() {
     sleepForMs(200);
     nSharedStruct->isRunning = false;
     freePruMmapAddr(nPruBase);
+    pthread_join(tid, NULL);
 }
 
 void Neopixel_setColour(int index, Colours col) {
