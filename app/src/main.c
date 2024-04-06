@@ -24,7 +24,7 @@ int main()
     Neopixel_init(&locks);
     Joystick_init(); //JOYSTICK SHOULD BE LAST THING TO INIT. I do a pthread_join() in Joystick_init()
     
-    sleepForMs(20000);
+    sleepForMs(2000);
     // Neopixel_setColour(0, LED_BRIGHT_GREEN);
     // Neopixel_setColour(1, LED_BRIGHT_GREEN);
     // Neopixel_setColour(2, LED_BRIGHT_GREEN);

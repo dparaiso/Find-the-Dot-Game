@@ -30,8 +30,11 @@ volatile sharedMemStruct_t* sharedStruct;
 void Joystick_init() {
     pPruBase = getPruMmapAddr();
     sharedStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);  
+    sharedStruct->isRunning = true;
     sharedStruct->joystickDown = false;  
     sharedStruct->joystickRight = false;
+    configPin(8, 15, "pruin");
+    configPin(8, 16, "pruin");
     pthread_create(&tid, NULL, &joystickController, NULL);
     pthread_join(tid, NULL); 
 }

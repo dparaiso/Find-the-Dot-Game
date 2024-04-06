@@ -42,8 +42,8 @@
 
 // P8_11 for output (on R30), PRU0
 #define NEOPIXEL_DATA_PIN 15       // Bit number to output on
-#define JOYSTICK_RIGHT_MASK (1 << 15)
 #define JOYSTICK_DOWN_MASK (1 << 14)
+#define JOYSTICK_RIGHT_MASK (1 << 15)
 
 #define THIS_PRU_DRAM 0x00000
 #define OFFSET 0x200
@@ -68,6 +68,8 @@ void main(void)
     sharedStruct->led6Colour = 0;
     sharedStruct->led7Colour = 0;
     sharedStruct->isRunning = true;
+    sharedStruct->joystickDown = false;
+    sharedStruct->joystickRight = false;
     uint32_t colour[NUM_OF_LEDS];
     // COLOURS
     // - 1st element in array is 1st (bottom) on LED strip; last element is last on strip (top)
@@ -128,8 +130,14 @@ void main(void)
         if (!(__R31 & JOYSTICK_DOWN_MASK)) {
             sharedStruct->joystickDown = true;
         }
+        else {
+            sharedStruct->joystickDown = false;
+        }
         if (!(__R31 & JOYSTICK_RIGHT_MASK)) {
             sharedStruct->joystickRight = true;
+        }
+        else {
+            sharedStruct->joystickRight = false;
         }
     }
 
