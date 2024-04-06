@@ -3,7 +3,6 @@
 static pthread_t xtid, ytid;
 static int i2cFileDesc; 
 Point point; 
-static pthread_mutex_t* lightLock;
 static pthread_mutex_t* xLock;
 static pthread_mutex_t* yLock;
 static enum xDirections* xState; 
@@ -20,7 +19,6 @@ void Accelerometer_init(void* args){
     aSharedStruct->isRunning = true;
 
     Locks* locks = (Locks*)args; 
-    lightLock = locks->lightLock; 
     xLock = locks->xLock; 
     yLock = locks->yLock; 
     xState = locks->xState; 
@@ -109,7 +107,7 @@ unsigned char readI2cReg(unsigned char regAddr)
 void* playAccelX(){
     // printf("point: %d\n", (int)point.x); 
     while(aSharedStruct->isRunning){
-        sleepForMs(500); 
+        sleepForMs(100); 
         // printf("x: %d\n", (int)readX()); 
         // match first int 
         if((int)readX() == (int)point.x){
@@ -132,7 +130,7 @@ void* playAccelX(){
 void* playAccelY(){
     // printf("point: %d\n", (int)point.y); 
     while(aSharedStruct->isRunning){
-        sleepForMs(500); 
+        sleepForMs(100); 
         // printf("y: %d\n", (int)readY()); 
         // match first int 
         int ydiff = (int)readY() - (int)point.y;
@@ -141,36 +139,36 @@ void* playAccelY(){
             case 0: 
                 yCopy = HITY; 
             break; 
-            case 1: //Down 1
-                yCopy = DOWN1; 
-            break;  
-            case 2: //Down 2
-                yCopy = DOWN2; 
-            break; 
-            case 3: //Down 3
-                yCopy = DOWN3; 
-            break; 
-            case 4: //Down 4
-                yCopy = DOWN4; 
-            break; 
-            case -1: //Up 1
+            case 1:
                 yCopy = UP1; 
-            break; 
-            case -2: //Up 2
+            break;  
+            case 2:
                 yCopy = UP2; 
             break; 
-            case -3: //Up 3
+            case 3:
                 yCopy = UP3; 
             break; 
-            case -4: //Up 4
+            case 4:
                 yCopy = UP4; 
             break; 
+            case -1:
+                yCopy = DOWN1; 
+            break; 
+            case -2:
+                yCopy = DOWN2; 
+            break; 
+            case -3:
+                yCopy = DOWN3; 
+            break; 
+            case -4:
+                yCopy = DOWN4; 
+            break; 
             default: 
-                if(ydiff > 4){ // Down 5
-                    yCopy = DOWN5; 
-
-                }else{ // UP5
+                if(ydiff > 4){
                     yCopy = UP5; 
+
+                }else{
+                    yCopy = DOWN5; 
                 }
             break; 
 
@@ -214,9 +212,13 @@ Point getRandomPoint(){
 bool isHit(){
     if(*xState == HITX && *yState == HITY) {
         timesHit++;
-        printf("timesHit: %d\n", timesHit);
+        printf("times Hit: %d\n", timesHit); 
         point = getRandomPoint(); 
         return true;
     }
     return false;
+}
+
+uint8_t getHits(){
+    return timesHit; 
 }

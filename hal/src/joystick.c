@@ -44,6 +44,8 @@ void* joystickController() {
         if(sharedStruct->joystickDown) {
             if(isHit()) {
                 //TODO: play Buzzer Hit Sound
+                sleepForMs(200); 
+
             }
             else {
                 //TODO: play Buzzer Miss Sound
@@ -53,7 +55,6 @@ void* joystickController() {
         if(sharedStruct->joystickRight) {
             sharedStruct->isRunning = false;
         }
-        sleepForMs(100); 
     }
     Joystick_cleanup();
     return NULL;

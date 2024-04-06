@@ -11,7 +11,6 @@ volatile void* nPruBase;
 volatile sharedMemStruct_t* nSharedStruct;
 
 static pthread_t tid; 
-static pthread_mutex_t* lightLock;
 static pthread_mutex_t* xLock;
 static pthread_mutex_t* yLock; 
 static enum xDirections* xState; 
@@ -33,7 +32,6 @@ void Neopixel_init(void* args) {
 
     // initialize shared things
     Locks* locks = (Locks*)args; 
-    lightLock = locks->lightLock; 
     xLock = locks->xLock; 
     yLock = locks->yLock; 
     xState = locks->xState; 
