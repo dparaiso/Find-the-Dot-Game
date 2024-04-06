@@ -19,8 +19,8 @@ static enum yDirections* yState;
 
 void Neopixel_init(void* args) {
     nPruBase = getPruMmapAddr();
-    nsharedStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);
-    nsharedStruct->isRunning = true;
+    nSharedStruct = (void*) PRU0_MEM_FROM_BASE(nPruBase);
+    nSharedStruct->isRunning = true;
 
     for(int i = 0; i < NUM_OF_LEDS; i++)  {
         Neopixel_setColour(i, LED_OFF); 
