@@ -14,9 +14,12 @@ typedef enum Colours{
     NUM_OF_COLOURS,
 } Colours;
 
-void Neopixel_init();
+void Neopixel_init(void* args);
 void Neopixel_cleanup();
 void Neopixel_setColour(int index, Colours colour);
+void* lightController();
+void setLedHint(enum yDirections ledPos, Colours col, Colours dimCol);
+void setAllLeds(Colours col);
 // void Neopixel_turnOn(int index);
 // void Neopixel_turnOff(int index); 
 
