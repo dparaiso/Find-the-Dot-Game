@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include "../../app/include/helper.h"
 #include "hal/joystick.h"
+#include "hal/accelerometer.h"
 #include "sharedDataStruct.h"
 
 // General PRU Memomry Sharing Routine
@@ -38,14 +39,20 @@ void Joystick_init() {
 void* joystickController() {
     while(sharedStruct->isRunning) {
         if(sharedStruct->joystickDown) {
-            //TODO: fire
-            //TODO: if hit, then generate new target
+            if(isHit()) {
+                //TODO: play Buzzer Hit Sound
+            }
+            else {
+                //TODO: play Buzzer Miss Sound
+            }
+            
         }
         if(sharedStruct->joystickRight) {
             sharedStruct->isRunning = false;
         }
     }
     Joystick_cleanup();
+    return NULL;
 }
 
 void Joystick_cleanup() {

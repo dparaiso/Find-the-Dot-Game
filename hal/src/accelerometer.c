@@ -8,19 +8,29 @@ static pthread_mutex_t* xLock;
 static pthread_mutex_t* yLock;
 static enum xDirections* xState; 
 static enum yDirections* yState; 
+static uint8_t timesHit;
 
+volatile void* aPruBase;
+volatile sharedMemStruct_t* aSharedStruct;
 
 void Accelerometer_init(void* args){
+
+    aPruBase = getPruMmapAddr();
+    aSharedStruct = (void*) PRU0_MEM_FROM_BASE(aPruBase);
+    aSharedStruct->isRunning = true;
+
     Locks* locks = (Locks*)args; 
     lightLock = locks->lightLock; 
     xLock = locks->xLock; 
     yLock = locks->yLock; 
     xState = locks->xState; 
     yState = locks->yState; 
+    
+    timesHit = 0;
+
     // initialize seed for random points
     srand(time(NULL)); 
     point = getRandomPoint(); 
-
     // configure pins
 	runCommand(i2c_config1);
     runCommand(i2c_config2); 
@@ -98,7 +108,7 @@ unsigned char readI2cReg(unsigned char regAddr)
 
 void* playAccelX(){
     // printf("point: %d\n", (int)point.x); 
-    while(1){
+    while(aSharedStruct->isRunning){
         sleepForMs(500); 
         // printf("x: %d\n", (int)readX()); 
         // match first int 
@@ -116,11 +126,12 @@ void* playAccelX(){
             pthread_mutex_unlock(xLock); 
         }
     }
+    return NULL;
 }
 
 void* playAccelY(){
     // printf("point: %d\n", (int)point.y); 
-    while(1){
+    while(aSharedStruct->isRunning){
         sleepForMs(500); 
         // printf("y: %d\n", (int)readY()); 
         // match first int 
@@ -170,6 +181,7 @@ void* playAccelY(){
         pthread_mutex_unlock(yLock); 
 
     }
+    return NULL;
 }
 
 float readX(){
@@ -200,5 +212,12 @@ Point getRandomPoint(){
 }
 
 bool isHit(){
-    return (*xState == HITX && *yState == HITY);
+    if(*xState == HITX && *yState == HITY) {
+        timesHit++;
+        printf("timesHit: %d\n", timesHit);
+        //TODO: Generate new point
+        
+        return true;
+    }
+    return false;
 }

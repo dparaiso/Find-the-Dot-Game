@@ -83,7 +83,7 @@ void Neopixel_setColour(int index, Colours col) {
 }
 
 void* lightController(){
-    while(1){
+    while(nSharedStruct->isRunning){
         enum Colours col = LED_OFF; 
         enum Colours dimCol = LED_OFF; 
         pthread_mutex_lock(xLock); 
@@ -118,6 +118,7 @@ void* lightController(){
         }
         sleepForMs(100); 
     }
+    return NULL;
 }
 
 void setLedHint(enum yDirections ledPos, Colours col, Colours dimCol){
