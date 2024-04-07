@@ -12,7 +12,10 @@ int num_outb[10] = {0xA1, 0x00, 0x83, 0x03, 0x22, 0X23, 0XA3, 0x01, 0xA3, 0x23};
 volatile void* PruBase;
 volatile sharedMemStruct_t* segSharedStruct;
 
+static bool isRunning;
+
 void segDisplay_init(){
+	isRunning = true;
 	PruBase = getPruMmapAddr();
     segSharedStruct = (void*) PRU0_MEM_FROM_BASE(PruBase);
     segSharedStruct->isRunning = true;
@@ -56,12 +59,13 @@ void segDisplay_init(){
 }
 
 void segDisplay_cleanup(){
-    pthread_cancel(ptid); 
+    isRunning = false;
 	pthread_join(ptid, NULL);
+	freePruMmapAddr(PruBase);    
 }
 
 void* displayNum(){
-    while(segSharedStruct->isRunning){
+    while(isRunning){
 		// turn off both digits
 		segDisplay_write(GPIO61_VAL, "0"); 
 		segDisplay_write(GPIO44_VAL, "0");

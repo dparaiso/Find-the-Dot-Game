@@ -27,8 +27,10 @@
 static pthread_t tid; 
 volatile void* pPruBase;
 volatile sharedMemStruct_t* sharedStruct;
+static bool isRunning;
 
 void Joystick_init() {
+    isRunning = true;
     pPruBase = getPruMmapAddr();
     sharedStruct = (void*) PRU0_MEM_FROM_BASE(pPruBase);  
     sharedStruct->isRunning = true;
@@ -37,11 +39,10 @@ void Joystick_init() {
     configPin(8, 15, "pruin");
     configPin(8, 16, "pruin");
     pthread_create(&tid, NULL, &joystickController, NULL);
-    pthread_join(tid, NULL); 
 }
 
 void* joystickController() {
-    while(sharedStruct->isRunning) {
+    while(isRunning) {
         if(sharedStruct->joystickDown) {
             if(isHit()) {
                 Buzzer_setIsHit(true);
@@ -58,15 +59,13 @@ void* joystickController() {
             
         }
         if(sharedStruct->joystickRight) {
-            sharedStruct->isRunning = false;
+            isRunning = false;
         }
     }
     return NULL;
 }
 
 void Joystick_cleanup() {
+    pthread_join(tid, NULL); 
     freePruMmapAddr(pPruBase);
-
-    // pthread_cancel(tid); 
-    // pthread_join(tid, NULL); 
 }

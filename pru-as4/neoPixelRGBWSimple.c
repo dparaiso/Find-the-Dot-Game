@@ -71,31 +71,7 @@ void main(void)
     sharedStruct->joystickDown = false;
     sharedStruct->joystickRight = false;
     uint32_t colour[NUM_OF_LEDS];
-    // COLOURS
-    // - 1st element in array is 1st (bottom) on LED strip; last element is last on strip (top)
-    // - Bits: {Green/8 bits} {Red/8 bits} {Blue/8 bits} {White/8 bits}
-    // uint32_t color[STR_LEN] = {
-    //     0x0f000000, // Green
-    //     0x000f0000, // Red
-    //     0x00000f00, // Blue
-    //     0x0000000f, // White
-    //     0x0f0f0f00, // White (via RGB)
-    //     0x0f0f0000, // Yellow
-    //     0x000f0f00, // Purple
-    //     0x0f000f00, // Teal
-
-    //     // Try these; they are birght! 
-    //     // (You'll need to comment out some of the above)
-    //     // 0xff000000, // Green Bright
-    //     // 0x00ff0000, // Red Bright
-    //     // 0x0000ff00, // Blue Bright
-    //     // 0xffffff00, // White
-    //     // 0xff0000ff, // Green Bright w/ Bright White
-    //     // 0x00ff00ff, // Red Bright w/ Bright White
-    //     // 0x0000ffff, // Blue Bright w/ Bright White
-    //     // 0xffffffff, // White w/ Bright White
-    // };    
-
+    
     while(sharedStruct->isRunning) {
         __delay_cycles(resetCycles);
         

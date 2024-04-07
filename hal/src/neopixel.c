@@ -15,8 +15,10 @@ static pthread_mutex_t* xLock;
 static pthread_mutex_t* yLock; 
 static enum xDirections* xState; 
 static enum yDirections* yState;
+static bool isRunning;
 
 void Neopixel_init(void* args) {
+    isRunning = true;
     nPruBase = getPruMmapAddr();
     nSharedStruct = (void*) PRU0_MEM_FROM_BASE(nPruBase);
     nSharedStruct->isRunning = true;
@@ -41,12 +43,13 @@ void Neopixel_init(void* args) {
 }
 
 void Neopixel_cleanup() {
+    isRunning = false;
     for(int i = 0; i < NUM_OF_LEDS; i++)  {
         Neopixel_setColour(i, LED_OFF);
     }
     sleepForMs(200);
-    nSharedStruct->isRunning = false;
     pthread_join(tid, NULL);
+    nSharedStruct->isRunning = false;
     freePruMmapAddr(nPruBase);
 }
 
@@ -82,7 +85,7 @@ void Neopixel_setColour(int index, Colours col) {
 }
 
 void* lightController(){
-    while(nSharedStruct->isRunning){
+    while(isRunning){
         enum Colours col = LED_OFF; 
         enum Colours dimCol = LED_OFF; 
         pthread_mutex_lock(xLock); 

@@ -11,9 +11,9 @@ static uint8_t timesHit;
 
 volatile void* aPruBase;
 volatile sharedMemStruct_t* aSharedStruct;
-
+static bool isRunning;
 void Accelerometer_init(void* args){
-
+    isRunning = true;
     aPruBase = getPruMmapAddr();
     aSharedStruct = (void*) PRU0_MEM_FROM_BASE(aPruBase);
     aSharedStruct->isRunning = true;
@@ -51,10 +51,10 @@ void Accelerometer_init(void* args){
 
 }
 void Accelerometer_cleanup(){
-    pthread_cancel(xtid); 
-	pthread_join(xtid, NULL);
-    pthread_cancel(ytid); 
+    isRunning = false;
+    pthread_join(xtid, NULL);
     pthread_join(ytid, NULL);
+    freePruMmapAddr(aPruBase);    
 }
 
 void initI2cBus(){
@@ -106,7 +106,7 @@ unsigned char readI2cReg(unsigned char regAddr)
 
 void* playAccelX(){
     // printf("point: %d\n", (int)point.x); 
-    while(aSharedStruct->isRunning){
+    while(isRunning){
         sleepForMs(100); 
         // printf("x: %d\n", (int)readX()); 
         // match first int 
@@ -129,7 +129,7 @@ void* playAccelX(){
 
 void* playAccelY(){
     // printf("point: %d\n", (int)point.y); 
-    while(aSharedStruct->isRunning){
+    while(isRunning){
         sleepForMs(100); 
         // printf("y: %d\n", (int)readY()); 
         // match first int 

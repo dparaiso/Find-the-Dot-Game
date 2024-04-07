@@ -17,7 +17,10 @@ volatile sharedMemStruct_t* bSharedStruct;
 #define BUZZER_PWM_DUTY_CYCLE "duty_cycle"
 #define BUZZER_PWM_ENABLE "enable"
 
+static bool isRunning;
+
 void Buzzer_init() {
+    isRunning = true;
     configPin(9, 22, "pwm");
 
     bPruBase = getPruMmapAddr();
@@ -37,6 +40,7 @@ void Buzzer_init() {
 }
 
 void Buzzer_cleanup() {
+    isRunning = false;
     pthread_join(tid, NULL);
     char filepath[1024];
     snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_PERIOD);
@@ -93,7 +97,7 @@ static void Buzzer_playMiss() {
 }
 
 void* Buzzer_playSound() {
-    while (bSharedStruct->isRunning) {
+    while (isRunning) {
         if (isHit) {
             Buzzer_playHit();
             isHit = false;

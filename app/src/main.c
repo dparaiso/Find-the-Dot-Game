@@ -19,8 +19,8 @@ static enum yDirections yState;
 int main()
 {
     Locks locks = {&xLock, &yLock, &xState, &yState}; 
-    Accelerometer_init(&locks); 
     Neopixel_init(&locks);
+    Accelerometer_init(&locks); 
     segDisplay_init(); 
     Buzzer_init();
     Joystick_init(); //JOYSTICK SHOULD BE LAST THING TO INIT. I do a pthread_join() in Joystick_init()
@@ -28,6 +28,6 @@ int main()
     Joystick_cleanup();
     Buzzer_cleanup();
     segDisplay_cleanup();
-    Neopixel_cleanup();
     Accelerometer_cleanup(); 
+    Neopixel_cleanup();
 } 
