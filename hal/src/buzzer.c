@@ -23,6 +23,15 @@ void Buzzer_init() {
     bPruBase = getPruMmapAddr();
     bSharedStruct = (void*)PRU0_MEM_FROM_BASE(bPruBase);
     bSharedStruct->isRunning = true;
+    isHit = false;
+    isMiss = false;
+    char filepath[1024];
+    snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_PERIOD);
+    writeToFile(filepath, 0);
+    snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_DUTY_CYCLE);
+    writeToFile(filepath, 0);
+    snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_ENABLE);
+
 
     pthread_create(&tid, NULL, &Buzzer_playSound, NULL);
 }
@@ -65,16 +74,16 @@ static void Buzzer_playHit() {
 static void Buzzer_playMiss() {
     char filepath[1024];
     snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_PERIOD);
-    writeToFile(filepath, 3000000);
+    writeToFile(filepath, 4000000);
     snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_DUTY_CYCLE);
-    writeToFile(filepath, 1500000);
+    writeToFile(filepath, 200000);
     snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_ENABLE);
     
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
         writeToFile(filepath, 1);
-        sleepForMs(150);
+        sleepForMs(250);
         writeToFile(filepath, 0);
-        sleepForMs(150);
+        sleepForMs(250);
     }
 }
 
