@@ -212,7 +212,6 @@ Point getRandomPoint(){
 bool isHit(){
     if(*xState == HITX && *yState == HITY) {
         timesHit++;
-        // printf("times Hit: %d\n", timesHit); 
         point = getRandomPoint(); 
         return true;
     }
