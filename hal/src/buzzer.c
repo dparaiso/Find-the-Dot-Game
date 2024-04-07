@@ -28,8 +28,9 @@ void Buzzer_init() {
 }
 
 void Buzzer_cleanup() {
-    freePruMmapAddr(bPruBase);
+    printf("%d\n", bSharedStruct->isRunning);
     pthread_join(tid, NULL);
+    freePruMmapAddr(bPruBase);    
 }
 void Buzzer_setIsHit(bool newIsHit) { isHit = newIsHit; }
 void Buzzer_setIsMiss(bool newIsMiss) { isMiss = newIsMiss; }
