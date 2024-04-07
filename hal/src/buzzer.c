@@ -37,8 +37,13 @@ void Buzzer_init() {
 }
 
 void Buzzer_cleanup() {
-    printf("%d\n", bSharedStruct->isRunning);
     pthread_join(tid, NULL);
+    char filepath[1024];
+    snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_PERIOD);
+    writeToFile(filepath, 0);
+    snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_DUTY_CYCLE);
+    writeToFile(filepath, 0);
+    snprintf(filepath, 1024, "%s%s", BUZZER_PWM_DIR, BUZZER_PWM_ENABLE);
     freePruMmapAddr(bPruBase);    
 }
 void Buzzer_setIsHit(bool newIsHit) { isHit = newIsHit; }
