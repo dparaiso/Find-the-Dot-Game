@@ -60,6 +60,8 @@ void segDisplay_init(){
 
 void segDisplay_cleanup(){
     isRunning = false;
+	segDisplay_write(GPIO61_VAL, "0"); 
+	segDisplay_write(GPIO44_VAL, "0");
 	pthread_join(ptid, NULL);
 	freePruMmapAddr(PruBase);    
 }

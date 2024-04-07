@@ -22,11 +22,11 @@
 #define i2c_config2 "config-pin P9_17 i2c"
 
 #define I2CDRV_LINUX_BUS1 "/dev/i2c-1"
-// #define I2C_DEVICE_ADDRESS 0x18
+#define I2C_DEVICE_ADDRESS 0x18
 #define I2C_READ_ADDRESS 0x98
 
 // green zencape address 
-#define I2C_DEVICE_ADDRESS 0x1C
+// #define I2C_DEVICE_ADDRESS 0x1C
 
 #define OUT_X_L 0x28
 #define OUT_X_H 0x29
