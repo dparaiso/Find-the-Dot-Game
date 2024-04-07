@@ -15,7 +15,7 @@
 #define i2c_config2 "config-pin P9_17 i2c"
 
 #define I2CDRV_LINUX_BUS1 "/dev/i2c-1"
-#define I2C_DEVICE_ADDRESS 0x20
+#define I2C_DEVICE_ADDRESS2 0x20
 
 #define REG_DIRA 0x02
 #define REG_DIRB 0x03

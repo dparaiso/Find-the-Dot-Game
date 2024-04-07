@@ -106,7 +106,7 @@ void initI2cBus_14Seg(){
 		exit(-1);
 	}
 
-	int result = ioctl(i2cFileDesc, I2C_SLAVE, I2C_DEVICE_ADDRESS);
+	int result = ioctl(i2cFileDesc, I2C_SLAVE, I2C_DEVICE_ADDRESS2);
 	if (result < 0) {
 		perror("Unable to set I2C device to slave address.");
 		exit(-1);

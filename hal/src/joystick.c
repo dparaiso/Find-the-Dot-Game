@@ -46,6 +46,7 @@ void* joystickController() {
             if(isHit()) {
                 Buzzer_setIsHit(true);
                 Buzzer_setIsMiss(false);
+                sleepForMs(200); 
             }
             else {
                 Buzzer_setIsHit(false);
