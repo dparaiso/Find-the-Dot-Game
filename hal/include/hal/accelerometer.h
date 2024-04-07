@@ -49,4 +49,5 @@ float readX();
 float readY();
 Point getRandomPoint(); 
 bool isHit();
+uint8_t getHits();
 #endif

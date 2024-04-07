@@ -2,7 +2,6 @@
 #define _HELPER_C_
 #include <pthread.h> 
 typedef struct{
-    pthread_mutex_t* lightLock; 
     pthread_mutex_t* xLock; 
     pthread_mutex_t* yLock; 
     enum xDirections* xState; 
