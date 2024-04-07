@@ -1,3 +1,7 @@
+// accelerometer.h 
+// continuously reads values for x and y accelerometer values on threads 
+// uses i2c for zen cape red at address 0x18 and generates random point for game play 
+
 #ifndef _ACCELEROMETER_H_
 #define _ACCELEROMETER_H_
 
@@ -38,16 +42,31 @@ typedef struct{
     double y; 
 } Point;
 
+// Begins thread for x and y values 
 void Accelerometer_init(void* args); 
+
+// joins threads 
 void Accelerometer_cleanup();
+
+// i2c configurations
 void initI2cBus();
 void writeI2cReg(unsigned char regAddr, unsigned char value);
 unsigned char readI2cReg(unsigned char regAddr);
+
+// continuously updates x and y values for neopixel display 
 void* playAccelX(); 
 void* playAccelY(); 
+
+// functions that actually do reading from registers
 float readX();
 float readY();
+
+// generates random point
 Point getRandomPoint(); 
+
+// returns if both x and y values are hit 
 bool isHit();
+
+// returns total number of hits 
 uint8_t getHits();
 #endif

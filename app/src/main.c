@@ -18,8 +18,6 @@ static enum yDirections yState;
 
 int main()
 {
-    printf("Hello world!\n");
-
     Locks locks = {&xLock, &yLock, &xState, &yState}; 
     Accelerometer_init(&locks); 
     Neopixel_init(&locks);

@@ -1,3 +1,7 @@
+// segDisply.h
+// module continuously reads number of hits from the accelerometer and updates the 14 seg display using thread 
+// segDisplay uses i2c on zen cape red at address 0x20 
+
 #ifndef _SEG_DISPLAY_H_
 #define _SEG_DISPLAY_H_
 
@@ -36,11 +40,22 @@
 #define GPIO61 "/sys/class/gpio/gpio61"
 #define GPIO44 "/sys/class/gpio/gpio44"
 
+// initializes threads
 void segDisplay_init();
+
+// cleans up thread
 void segDisplay_cleanup();
+
+// continuously reads number of hits from accelerometer and displays 
 void* displayNum();
+
+// i2c logic for zencape red
 void initI2cBus_14Seg();
 void writeI2cReg_14Seg(unsigned char regAddr, unsigned char value);
+
+// similar to runCommand, used for exporting pins and writing to specific segDisplay files 
 void segDisplay_write(char *filename, char* param);
+
+// checks if pins are already exported 
 bool checkIfExported(char *gpioPin);
 #endif

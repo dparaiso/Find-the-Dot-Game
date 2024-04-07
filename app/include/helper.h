@@ -1,3 +1,8 @@
+// helper.h
+// contains locks and shared memory used for reading and writing accelerometer x and y values between threads
+// contains enum for XDirections and YDirections used to display color and led positions 
+// module contains system commands and PRU shared memory logic
+
 #ifndef _HELPER_C_
 #define _HELPER_C_
 #include <pthread.h> 
