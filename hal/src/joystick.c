@@ -45,12 +45,15 @@ void* joystickController() {
         if(sharedStruct->joystickDown) {
             if(isHit()) {
                 Buzzer_setIsHit(true);
+                sleepForMs(5); 
                 Buzzer_setIsMiss(false);
                 sleepForMs(200); 
             }
             else {
                 Buzzer_setIsHit(false);
+                sleepForMs(5); 
                 Buzzer_setIsMiss(true);
+                sleepForMs(100); 
             }
             
         }
